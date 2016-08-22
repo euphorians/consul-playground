@@ -1,0 +1,9 @@
+/packaging/packer_cache/
+/packaging/output-virtualbox-iso/
+/packaging/target/
+/.idea/
+/vagrant/.vagrant/
+
+*~
+*.iml
+*.ipr

@@ -1,0 +1,69 @@
+{
+    "builders"       : [
+        {
+            "type"                : "virtualbox-iso",
+            "iso_url"             : "http://releases.ubuntu.com/trusty/ubuntu-14.04.4-server-amd64.iso",
+            "iso_checksum"        : "2ac1f3e0de626e54d05065d6f549fa3a",
+            "iso_checksum_type"   : "md5",
+            "ssh_username"        : "vagrant",
+            "ssh_password"        : "vagrant",
+            "boot_command"        : [
+                "<esc><esc><enter><wait>",
+                "/install/vmlinuz ",
+                "auto ",
+                "noapic ",
+                "locale=de_DE ",
+                "debian-installer=de_DE ",
+                "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+                "kbd-chooser/method=de ",
+                "hostname={{ .Name }} ",
+                "fb=false debconf/frontend=noninteractive ",
+                "keyboard-configuration/modelcode=SKIP ",
+                "keyboard-configuration/layout=DE ",
+                "keyboard-configuration/variant=DE ",
+                "console-setup/ask_detect=false ",
+                "initrd=/install/initrd.gz -- <enter>",
+                "<wait10><wait10><enter>"
+            ],
+            "shutdown_command"    : "echo 'vagrant' | sudo -S /sbin/halt -h -p",
+            "http_directory"      : "config",
+            "headless"            : false,
+            "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+            "guest_os_type"       : "Ubuntu_64",
+            "disk_size"           : 16384,
+            "vboxmanage"          : [
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--memory",
+                    "512"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--cpus",
+                    "1"
+                ]
+            ]
+        }
+    ],
+    "provisioners"   : [
+        {
+            "type"           : "shell",
+            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+            "scripts"        : [
+                "scripts/vboxguest.sh",
+                "scripts/vagrant.sh",
+                "scripts/packages.sh"
+            ]
+        }
+    ],
+    "post-processors": [
+        {
+            "output"             : "target/ubuntu-14.04.4-amd64.box",
+            "type"               : "vagrant",
+            "compression_level"  : 0,
+            "keep_input_artifact": true
+        }
+    ]
+}

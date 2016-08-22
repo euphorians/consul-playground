@@ -1,0 +1,184 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  #
+  # TimeService ONE
+  #
+  config.vm.define :timeservice1 do |timeservice1|
+    timeservice1.vm.box = "consul-example-box"
+    timeservice1.vm.hostname = 'timeservice1'
+    timeservice1.vm.network :private_network, ip: "192.168.60.10"
+
+    timeservice1.vm.provider "virtualbox" do |vb|
+      vb.memory = 256
+    end
+
+    timeservice1.vm.synced_folder "exchange", "/exchange"
+
+    timeservice1.vm.provision :puppet do |puppet|
+      puppet.manifests_path = "puppet/manifests/"
+      puppet.manifest_file = "ts1.pp"
+      puppet.module_path = "puppet/modules"
+    end
+  end
+
+  #
+  # TimeService TWO
+  #
+  config.vm.define :timeservice2 do |timeservice2|
+    timeservice2.vm.box = "consul-example-box"
+    timeservice2.vm.hostname = 'timeservice2'
+    timeservice2.vm.network :private_network, ip: "192.168.60.20"
+
+    timeservice2.vm.provider "virtualbox" do |vb|
+      vb.memory = 256
+    end
+
+    timeservice2.vm.synced_folder "exchange", "/exchange"
+
+    timeservice2.vm.provision :puppet do |puppet|
+      puppet.manifests_path = "puppet/manifests/"
+      puppet.manifest_file = "ts2.pp"
+      puppet.module_path = "puppet/modules"
+    end
+  end
+
+  #
+  # TimeService THREE
+  #
+  config.vm.define :timeservice3 do |timeservice3|
+    timeservice3.vm.box = "consul-example-box"
+    timeservice3.vm.hostname = 'timeservice3'
+    timeservice3.vm.network :private_network, ip: "192.168.60.30"
+
+    timeservice3.vm.provider "virtualbox" do |vb|
+      vb.memory = 256
+    end
+
+    timeservice3.vm.synced_folder "exchange", "/exchange"
+
+    timeservice3.vm.provision :puppet do |puppet|
+      puppet.manifests_path = "puppet/manifests/"
+      puppet.manifest_file = "ts3.pp"
+      puppet.module_path = "puppet/modules"
+    end
+  end
+
+  #
+  # HA Proxy
+  #
+  config.vm.define :haproxy do |haproxy|
+    haproxy.vm.box = "consul-example-box"
+    haproxy.vm.hostname = "haproxy"
+    haproxy.vm.network :private_network, ip: "192.168.60.210"
+    haproxy.vm.network :forwarded_port, guest: 80, host: 10080, auto_correct: false
+
+    haproxy.vm.provider "virtualbox" do |vb|
+      vb.memory = 256
+    end
+
+    haproxy.vm.synced_folder "exchange", "/exchange"
+#       haproxy.vm.synced_folder "templates", "/templates"
+
+    haproxy.vm.provision :puppet do |puppet|
+      puppet.manifests_path = "puppet/manifests/"
+      puppet.manifest_file = "ha.pp"
+      puppet.module_path = "puppet/modules"
+    end
+  end
+
+  #
+  # Consul Web UI
+  #
+  config.vm.define :webui do |webui|
+    webui.vm.box = "consul-example-box"
+    webui.vm.hostname = "webui"
+    webui.vm.network :private_network, ip: "192.168.60.250"
+    webui.vm.network :forwarded_port, guest: 8500, host: 8500, auto_correct: false
+
+    webui.vm.provider "virtualbox" do |vb|
+      vb.memory = 1024
+    end
+
+    webui.vm.synced_folder "exchange", "/exchange"
+
+    webui.vm.provision :puppet do |puppet|
+      puppet.manifests_path = "puppet/manifests/"
+      puppet.manifest_file = "ui.pp"
+      puppet.module_path = "puppet/modules"
+    end
+  end
+
+  #
+  # Consul Leader A it self
+  #
+  config.vm.define "consul-a" do |consul|
+    consul.vm.box = "consul-example-box"
+    consul.vm.hostname = "consul-a"
+    consul.vm.network :private_network, ip: "192.168.60.120"
+
+    consul.vm.provider "virtualbox" do |vb|
+      vb.memory = 1024
+    end
+
+    consul.vm.synced_folder "exchange", "/exchange"
+
+    consul.vm.provision :puppet do |puppet|
+      puppet.manifests_path = "puppet/manifests/"
+      puppet.manifest_file = "consul-a.pp"
+      puppet.module_path = "puppet/modules"
+    end
+  end
+
+  #
+  # Consul Leader B it self
+  #
+  config.vm.define "consul-b" do |consul|
+    consul.vm.box = "consul-example-box"
+    consul.vm.hostname = "consul-b"
+    consul.vm.network :private_network, ip: "192.168.60.110"
+
+    consul.vm.provider "virtualbox" do |vb|
+      vb.memory = 1024
+    end
+
+    consul.vm.synced_folder "exchange", "/exchange"
+
+    consul.vm.provision :puppet do |puppet|
+      puppet.manifests_path = "puppet/manifests/"
+      puppet.manifest_file = "consul-b.pp"
+      puppet.module_path = "puppet/modules"
+    end
+  end
+
+  #
+  # Consul Leader B it self
+  #
+  config.vm.define "consul-c" do |consul|
+    consul.vm.box = "consul-example-box"
+    consul.vm.hostname = "consul-c"
+    consul.vm.network :private_network, ip: "192.168.60.100"
+
+    consul.vm.provider "virtualbox" do |vb|
+      vb.memory = 1024
+    end
+
+    consul.vm.synced_folder "exchange", "/exchange"
+
+    consul.vm.provision :puppet do |puppet|
+      puppet.manifests_path = "puppet/manifests/"
+      puppet.manifest_file = "consul-c.pp"
+      puppet.module_path = "puppet/modules"
+    end
+  end
+
+end
+
+
+# end of file ;-)
+

@@ -1,0 +1,1 @@
+Directory for exchanging files with the Vagrant boxes.
