@@ -20,6 +20,9 @@ cluster consists of.
 **curl** is used to fetch all required Consul artifacts
 from the Internet.  
 
+Please ensure that all three tools have been installed on 
+your machine before you continue.
+
 ## Compatiblity
 
 The setup of the Consul cluster has been tested only
@@ -27,5 +30,8 @@ on Apple OS X.
 
 ## Setup of the example cluster
 
-1. Package Ubuntu 14.04.1 for Vagrant as descripted
+1. Package Ubuntu 14.04.1 for Vagrant as described
    in the [`readme.md` of the directory packaging](./packaging/).
+2. Start the Consul cluster as described in the
+   [`readme.md` of the directory `vagrant`](./vagrant).
+
