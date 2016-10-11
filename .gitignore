@@ -3,7 +3,7 @@
 /packaging/target/
 /.idea/
 /vagrant/.vagrant/
-
+.DS_store
 *~
 *.iml
 *.ipr
