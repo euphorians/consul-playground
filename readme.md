@@ -23,4 +23,9 @@ from the Internet.
 ## Compatiblity
 
 The setup of the Consul cluster has been tested only
-on Apple OS X. 
+on Apple OS X.
+
+## Setup of the example cluster
+
+1. Package Ubuntu 14.04.1 for Vagrant as descripted
+   in the [`readme.md` of the directory packaging](./packaging/).
